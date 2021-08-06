@@ -42,24 +42,24 @@ else:
 # inital picture
 frame = cv2.imread('data/raw/hsuth/hsuth3.jpeg')
 
-#try:
-image = Image.fromarray(frame[...,::-1]) #bgr to rgb
-bboxes, faces = mtcnn.align_multi(image, conf.face_limit, conf.min_face_size)
-bboxes = bboxes[:,:-1] #shape:[10,4],only keep 10 highest possibiity faces
-bboxes = bboxes.astype(int)
-bboxes = bboxes + [-1,-1,1,1] # personal choice    
-results, score = learner.infer(conf, faces, targets, args.tta)
-  # print(score[0])
-for idx,bbox in enumerate(bboxes):
-    if args.score:
-        frame = draw_box_name(bbox, names[results[idx] + 1] + '_{:.2f}'.format(score[idx]), frame)
-    else:
-        if float('{:.2f}'.format(score[idx])) > .98:
-            name = names[0]
-        else:    
-            name = names[results[idx]+1]
-        frame = draw_box_name(bbox, names[results[idx] + 1], frame)
-cv2.imwrite('test_out.jpg',frame)
-#except:
-print('error')
-pass    
+try:
+  image = Image.fromarray(frame[...,::-1]) #bgr to rgb
+  bboxes, faces = mtcnn.align_multi(image, conf.face_limit, conf.min_face_size)
+  bboxes = bboxes[:,:-1] #shape:[10,4],only keep 10 highest possibiity faces
+  bboxes = bboxes.astype(int)
+  bboxes = bboxes + [-1,-1,1,1] # personal choice    
+  results, score = learner.infer(conf, faces, targets, args.tta)
+    # print(score[0])
+  for idx,bbox in enumerate(bboxes):
+      if args.score:
+          frame = draw_box_name(bbox, names[results[idx] + 1] + '_{:.2f}'.format(score[idx]), frame)
+      else:
+          if float('{:.2f}'.format(score[idx])) > .98:
+              name = names[0]
+          else:    
+              name = names[results[idx]+1]
+          frame = draw_box_name(bbox, names[results[idx] + 1], frame)
+  cv2.imwrite('test_out.jpg',frame)
+except:
+  print('error')
+  pass    
