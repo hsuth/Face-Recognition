@@ -59,6 +59,7 @@ try:
           else:    
               name = names[results[idx]+1]
           frame = draw_box_name(bbox, names[results[idx] + 1], frame)
+  print('output: test_out.jpg')
   cv2.imwrite('test_out.jpg',frame)
 except:
   print('error')
