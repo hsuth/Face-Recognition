@@ -42,18 +42,32 @@ if __name__ == '__main__':
         print('facebank loaded')
 
     # inital camera
-    img = []
-    
-    img.append(cv2.imread('data/input/evans/evans_p.jpg'))
-    img.append(cv2.imread('data/input/hermsworth/hermsworth_p.jpg'))
-    img.append(cv2.imread('data/input/jeremy/jeremy.jpg'))
-    img.append(cv2.imread('data/input/mark/mark.jpg'))
-    img.append(cv2.imread('data/input/olsen/olsen.jpg'))
-
-    
-    for i in range(5):
-        try:
-            image = Image.fromarray(img[i][...,::-1]) #bgr to rgb
+    img = cv2.imread('data/input/evans/evans_p.jpg')
+   
+    try:
+            image = Image.fromarray(img[...,::-1]) #bgr to rgb
+            bboxes, faces = mtcnn.align_multi(image, conf.face_limit, conf.min_face_size)
+            bboxes = bboxes[:,:-1] #shape:[10,4],only keep 10 highest possibiity faces
+            bboxes = bboxes.astype(int)
+            bboxes = bboxes + [-1,-1,1,1] # personal choice    
+            results, score = learner.infer(conf, faces, targets, args.tta)
+                    # print(score[0])
+                for idx,bbox in enumerate(bboxes):
+                        if args.score:
+                            frame = draw_box_name(bbox, names[results[idx] + 1] + '_{:.2f}'.format(score[idx]), frame)
+                        else:
+                            if float('{:.2f}'.format(score[idx])) > .98:
+                                name = names[0]
+                            else:    
+                                name = names[results[idx]+1]
+                            frame = draw_box_name(bbox, names[results[idx] + 1], frame)
+                except:
+                    pass    
+                cv2.imwrite('data/output/img_{}.jpg',frame)
+                cv2.imencode('.jpg', frame)
+            
+            
+            
 #            image = Image.fromarray(img[i])
             print('----------------------------------')
             bboxes, faces = mtcnn.align_multi(image, conf.face_limit, conf.min_face_size)
@@ -73,4 +87,9 @@ if __name__ == '__main__':
             print('detect error')    
             
         cv2.imwrite('data/output/img_{}.jpg'.format(i), img[i])
+        
+        
+       
+                  
+               
         
