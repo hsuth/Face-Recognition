@@ -5,6 +5,13 @@
  - Detect faces from an image, video or in webcam and perform face recogntion.
  - app.py was used to deploy the project.
  
+## Colab Instructions
+- switch to tensorflow 1.x
+``` python
+    %tensorflow_version 1.x
+```
+
+
 ## Required Files
 - requirements.txt
 - pretrained model [IR-SE50 @ Onedrive](https://onedrive.live.com/?authkey=%21AOw5TZL8cWlj10I&cid=CEC0E1F8F0542A13&id=CEC0E1F8F0542A13%21835&parId=root&action=locate) or [Mobilefacenet @ OneDrive](https://onedrive.live.com/?authkey=%21AIweh1IfiuF9vm4&cid=CEC0E1F8F0542A13&id=CEC0E1F8F0542A13%21836&parId=root&o=OneUp).
