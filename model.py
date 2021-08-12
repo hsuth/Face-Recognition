@@ -9,6 +9,7 @@ import pdb
 
 class Flatten(Module):
     def forward(self, input):
+        #打平，view函式等同於reshape函式
         return input.view(input.size(0), -1)
 
 def l2_norm(input,axis=1):
