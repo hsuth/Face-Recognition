@@ -28,7 +28,7 @@ conf = get_config(False)
 mtcnn = MTCNN()
 print('arcface loaded')
 
-log_load_onnx = timer('Load Pytorch Model')
+log_load_torch = timer('Load Pytorch Model')
 
 learner = face_learner(conf, True)
 learner.threshold = args.threshold
@@ -85,4 +85,4 @@ except Exception as e:
   print(errMsg)
   pass    
 
-log_load_onnx.end()
+log_load_torch.end()
