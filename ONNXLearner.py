@@ -15,10 +15,14 @@ import math
 import bcolz
 import onnxruntime 
 
+def to_numpy(tensor):
+      return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
+
 
 class ONNXModel(object):
-    def __init__(self):
+    def __init__(self, conf):
         self.filename=""
+        self.conf=conf
         
     def load_state_dict(self, filename):
         self.filename=str(filename)
@@ -26,21 +30,19 @@ class ONNXModel(object):
         self.ort_session = onnxruntime.InferenceSession(self.filename)       
         print(self.filename)
     
-    def to_numpy(self, tensor):
-        return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
-    
+     
     #img_y is pytorch tensor type
     def __call__(self, img_y):
         self.ort_inputs = {self.ort_session.get_inputs()[0].name: to_numpy(img_y)}
-        self.ort_outs = self.ort_session.run(None, ort_inputs)
-        result = torch.from_numpy(self.ort_outs[0])
+        self.ort_outs = self.ort_session.run(None, self.ort_inputs)
+        result = torch.from_numpy(self.ort_outs[0]).to(self.conf.device)
         return result
       
     
 class face_learner(object):
     def __init__(self, conf, inference=False):
         print(conf)
-        self.model = ONNXModel()            
+        self.model = ONNXModel(conf)            
         self.threshold = conf.threshold
     
     def load_state(self, conf, fixed_str, from_save_folder=False):
