@@ -10,7 +10,8 @@ from ONNXLearner import face_learner
 from utils import load_facebank, draw_box_name, prepare_facebank
 import sys
 import traceback
-
+# Custom
+from log import timer, logger
 
 parser = argparse.ArgumentParser(description='for face verification')
 parser.add_argument("-file", "--file", help="test file name")
@@ -26,6 +27,8 @@ conf = get_config(False)
 
 mtcnn = MTCNN()
 print('arcface loaded')
+
+log_load_onnx = timer('Load ONNX Model')
 
 learner = face_learner(conf, True)
 learner.threshold = args.threshold
@@ -76,3 +79,4 @@ except Exception as e:
   print(errMsg)
   pass    
 
+log_load_onnx.end()
