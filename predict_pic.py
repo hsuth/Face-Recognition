@@ -12,6 +12,7 @@ from utils import load_facebank, draw_box_name, prepare_facebank
 
 parser = argparse.ArgumentParser(description='for face verification')
 parser.add_argument("-file", "--file", help="test file name")
+parser.add_argument("-o", "--output", help="outputfile name", default="test_out.jpg")
 parser.add_argument("-s", "--save", help="whether save",action="store_true")
 parser.add_argument('-th','--threshold',help='threshold to decide identical faces',default=1.54, type=float)
 parser.add_argument("-u", "--update", help="whether perform update the facebank",action="store_true")
@@ -65,8 +66,8 @@ try:
           else:    
               name = names[results[idx]+1]
           frame = draw_box_name(bbox, names[results[idx] + 1], frame)
-  print('output: test_out.jpg')
-  cv2.imwrite('test_out.jpg',frame)
+  print('output '+ args.output)
+  cv2.imwrite(args.output,frame)
 except:
   print('error')
   pass    
