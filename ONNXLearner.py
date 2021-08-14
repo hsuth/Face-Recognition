@@ -13,24 +13,24 @@ from PIL import Image
 from torchvision import transforms as trans
 import math
 import bcolz
-import onnxruntime as ort
+import onnxruntime 
 
-ort_session = onnxruntime.InferenceSession("super_resolution.onnx")
 
 class ONNXModel(object):
     def __init__(self):
         self.filename=""
         
-    def load_state_dict(self, filename)
-        self.filename=filename
-        self.ort_session = onnxruntime.InferenceSession("super_resolution.onnx")       
+    def load_state_dict(self, filename):
+        self.filename=str(filename)
+        print(self.filename)
+        self.ort_session = onnxruntime.InferenceSession(self.filename)       
         print(self.filename)
     
     def to_numpy(self, tensor):
         return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
     
     #img_y is pytorch tensor type
-  　def __call__(self, img_y):
+    def __call__(self, img_y):
         self.ort_inputs = {self.ort_session.get_inputs()[0].name: to_numpy(img_y)}
         self.ort_outs = self.ort_session.run(None, ort_inputs)
         result = torch.from_numpy(self.ort_outs[0])
@@ -40,20 +40,15 @@ class ONNXModel(object):
 class face_learner(object):
     def __init__(self, conf, inference=False):
         print(conf)
-        if conf.use_mobilfacenet:
-            self.model = ONNXModel("MobileFaceNet.onnx")
-            print('MobileFaceNet model generated')
-        else:
-            self.model = ONNXModel("OtherFaceNet.onnx")
-            
+        self.model = ONNXModel()            
         self.threshold = conf.threshold
     
-     def load_state(self, conf, fixed_str, from_save_folder=False):
+    def load_state(self, conf, fixed_str, from_save_folder=False):
         if from_save_folder:
             save_path = conf.save_path
         else:
             save_path = conf.model_path            
-        self.model.load_state_dict(save_path/'model_{}'.format(fixed_str)))
+        self.model.load_state_dict(save_path/'model_{}'.format(fixed_str))
           
     def infer(self, conf, faces, target_embs, tta=False):
         '''
