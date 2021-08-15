@@ -15,5 +15,6 @@ scikit_learn==0.21.3
 tensorboardX==1.8
 torch
 torchvision
-numpy==1.16.1
+#numpy==1.16.1 
+#already fix face_detect error, no more need to install numpy 1.16 version 
 
