@@ -135,10 +135,19 @@ def main(args):
                       H= bbox[3] -Y
                       cropped = frame[X:W, Y:H]
 
-                      image = cv2.resize(image, (256, 256), interpolation=cv2.INTER_AREA)
+                      croppedsized = cv2.resize(cropped, (args.image_size, args.image_size), interpolation=cv2.INTER_AREA)
                       print('output '+ args.output)
-                      cv2.imwrite(args.output,frame)
-                      
+
+                      filename_base, file_extension = os.path.splitext(output_filename)
+                        if args.detect_multiple_faces:
+                            output_filename_n = "{}_{}{}".format(filename_base, i, file_extension)
+                        else:
+                            output_filename_n = "{}{}".format(filename_base, file_extension)
+
+                      cv2.imwrite(output_filename_n,croppedsized)
+                      nrof_successfully_aligned += 1
+                      text_file.write('%s %d %d %d %d\n' % (output_filename_n, bbox[0], bbox[1], bbox[2], bbox[3]))
+
                     """
                     nrof_faces = bounding_boxes.shape[0]
                     if nrof_faces>0:
