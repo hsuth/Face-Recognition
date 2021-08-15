@@ -137,7 +137,10 @@ def main(args):
                     
                     # print(score[0])
                     for idx,bbox in enumerate(bboxes):
+                                      
                       print("idx:"+str(idx))
+                      """
+                      #already cropped, no need codes
                       X= bbox[0]
                       Y= bbox[1]
                       W= bbox[2] -X
@@ -147,12 +150,12 @@ def main(args):
                       print("cropped size:"+str(cropped.shape))
 
                       croppedsized = cv2.resize(cropped, (args.image_size, args.image_size), interpolation=cv2.INTER_AREA)
-                     
+                      """
 
                       filename_base, file_extension = os.path.splitext(output_filename)
                       output_filename_n = "{}{}".format(filename_base, file_extension)
                       
-                      cv2.imwrite(output_filename_n,croppedsized)
+                      faces[idx].save(output_filename_n)
                       print('output: '+ output_filename_n)
                       nrof_successfully_aligned += 1
                       text_file.write('%s %d %d %d %d\n' % (output_filename_n, bbox[0], bbox[1], bbox[2], bbox[3]))
