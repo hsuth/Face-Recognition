@@ -44,6 +44,7 @@ from mtcnn import MTCNN
 from utils import load_facebank, draw_box_name, prepare_facebank
 
 from time import sleep
+import traceback
 
 class ImageClass():
     "Stores the paths to images for a given class"
@@ -56,6 +57,13 @@ class ImageClass():
   
     def __len__(self):
         return len(self.image_paths)
+
+def get_image_paths(facedir):
+    image_paths = []
+    if os.path.isdir(facedir):
+        images = os.listdir(facedir)
+        image_paths = [os.path.join(facedir,img) for img in images]
+    return image_paths
 
 def get_dataset(path, has_class_directories=True):
     dataset = []
@@ -118,7 +126,7 @@ def main(args):
                 print(image_path)
                 if not os.path.exists(output_filename):
                   try:
-                    frame = cv2.imread(filename)
+                    frame = cv2.imread(image_path)
                     image = Image.fromarray(frame[...,::-1]) #bgr to rgb
 
                     #bounding_boxes, _ = align.detect_face.detect_face(img, minsize, pnet, rnet, onet, threshold, factor)
@@ -129,47 +137,37 @@ def main(args):
                     
                     # print(score[0])
                     for idx,bbox in enumerate(bboxes):
+                      print("idx:"+str(idx))
                       X= bbox[0]
-                      Y=bbox[1]
-                      W= bbox[2] - X
+                      Y= bbox[1]
+                      W= bbox[2] -X
                       H= bbox[3] -Y
-                      cropped = frame[X:W, Y:H]
+                      print("framesize:"+str(frame.shape))
+                      cropped = frame[X:W,Y:H,:]
+                      print("cropped size:"+str(cropped.shape))
 
                       croppedsized = cv2.resize(cropped, (args.image_size, args.image_size), interpolation=cv2.INTER_AREA)
-                      print('output '+ args.output)
+                     
 
                       filename_base, file_extension = os.path.splitext(output_filename)
-                        if args.detect_multiple_faces:
-                            output_filename_n = "{}_{}{}".format(filename_base, i, file_extension)
-                        else:
-                            output_filename_n = "{}{}".format(filename_base, file_extension)
-
+                      output_filename_n = "{}{}".format(filename_base, file_extension)
+                      
                       cv2.imwrite(output_filename_n,croppedsized)
+                      print('output: '+ output_filename_n)
                       nrof_successfully_aligned += 1
                       text_file.write('%s %d %d %d %d\n' % (output_filename_n, bbox[0], bbox[1], bbox[2], bbox[3]))
-
-                    """
-                    nrof_faces = bounding_boxes.shape[0]
-                    if nrof_faces>0:
-                        det = bounding_boxes[:,0:4]
-                        det_arr = []
-                        img_size = np.asarray(img.shape)[0:2]
-                        if nrof_faces>1:
-                      
-                            cropped = img[bb[1]:bb[3],bb[0]:bb[2],:]
-                            scaled = misc.imresize(cropped, (args.image_size, args.image_size), interp='bilinear')
-                            nrof_successfully_aligned += 1
-                            filename_base, file_extension = os.path.splitext(output_filename)
-                            if args.detect_multiple_faces:
-                                output_filename_n = "{}_{}{}".format(filename_base, i, file_extension)
-                            else:
-                                output_filename_n = "{}{}".format(filename_base, file_extension)
-                            misc.imsave(output_filename_n, scaled)
-                            text_file.write('%s %d %d %d %d\n' % (output_filename_n, bb[0], bb[1], bb[2], bb[3]))
-                    else:
-                        print('Unable to align "%s"' % image_path)
-                        text_file.write('%s\n' % (output_filename))
-                    """        
+                  except Exception as e:
+                      error_class = e.__class__.__name__ #取得錯誤類型
+                      detail = e.args[0] #取得詳細內容
+                      cl, exc, tb = sys.exc_info() #取得Call Stack
+                      lastCallStack = traceback.extract_tb(tb)[-1] #取得Call Stack的最後一筆資料
+                      fileName = lastCallStack[0] #取得發生的檔案名稱
+                      lineNum = lastCallStack[1] #取得發生的行號
+                      funcName = lastCallStack[2] #取得發生的函數名稱
+                      errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+                      print(errMsg)
+                      pass        
+     
     print('Total number of images: %d' % nrof_images_total)
     print('Number of successfully aligned images: %d' % nrof_successfully_aligned)
             
