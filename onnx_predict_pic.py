@@ -42,10 +42,12 @@ targets, names = load_facebank(conf)
 print('facebank size: '+str(targets.shape))
 print('names: '+str(names))
 print('facebank loaded')
+log_load_onnx.end()
 
 # inital picture
 #frame = cv2.imread('data/raw/dhc/chendh.jpg')
 frame = cv2.imread(args.file)
+log_infer_onnx = timer('Infer ONNX Model')
 
 try:
   image = Image.fromarray(frame[...,::-1]) #bgr to rgb
@@ -79,4 +81,4 @@ except Exception as e:
   print(errMsg)
   pass    
 
-log_load_onnx.end()
+log_infer_onnx.end()

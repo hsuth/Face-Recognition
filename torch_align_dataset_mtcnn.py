@@ -25,15 +25,14 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from scipy import misc
+#from scipy import misc
 import sys
 import os
 import argparse
 import numpy as np
 import random
-import imageio
+#import imageio
 
-import cv2
 from PIL import Image
 import argparse
 from pathlib import Path
@@ -42,6 +41,7 @@ import torch
 from config import get_config
 from mtcnn import MTCNN
 from utils import load_facebank, draw_box_name, prepare_facebank
+import cv2
 
 from time import sleep
 import traceback

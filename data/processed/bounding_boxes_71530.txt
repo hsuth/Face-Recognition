@@ -1,0 +1,2 @@
+data/processed/chendh/chendh.png 43 46 100 120
+data/processed/liangcw/index.png 38 57 149 202

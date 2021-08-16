@@ -4,10 +4,14 @@ __pycache__/
 *$py.class
 
 # C extensions
+core
 *.so
 
 # Distribution / packaging
 .Python
+*.whl
+*.pth
+*.onnx
 build/
 develop-eggs/
 dist/

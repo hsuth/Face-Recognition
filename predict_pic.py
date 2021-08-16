@@ -38,6 +38,7 @@ else:
     learner.load_state(conf, 'final.pth', True, True)
 learner.model.eval()
 print('learner loaded')
+log_load_torch.end()
 
 print(args.file)
 
@@ -56,11 +57,15 @@ frame = cv2.imread(args.file)
 
 try:
   image = Image.fromarray(frame[...,::-1]) #bgr to rgb
+  log_infer_mtcnn = timer('Infer MTCNN Model')
   bboxes, faces = mtcnn.align_multi(image, conf.face_limit, conf.min_face_size)
+  log_infer_mtcnn.end() 
   bboxes = bboxes[:,:-1] #shape:[10,4],only keep 10 highest possibiity faces
   bboxes = bboxes.astype(int)
   bboxes = bboxes + [-1,-1,1,1] # personal choice    
+  log_infer_torch = timer('Infer Pytorch Model')
   results, score = learner.infer(conf, faces, targets, args.tta)
+  log_infer_torch.end()
     # print(score[0])
   for idx,bbox in enumerate(bboxes):
       if args.score:
@@ -85,4 +90,3 @@ except Exception as e:
   print(errMsg)
   pass    
 
-log_load_torch.end()

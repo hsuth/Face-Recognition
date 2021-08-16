@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 plt.switch_backend('agg')
 import io
 from torchvision import transforms as trans
-from data.data_pipe import de_preprocess
+#from data.data_pipe import de_preprocess
 import torch
 from model import l2_norm
 import pdb
@@ -109,7 +109,7 @@ def face_reader(conf, conn, flag, boxes_arr, result_arr, learner, mtcnn, targets
         print('boxes_arr ： {}'.format(boxes_arr[:4]))
         print('result_arr ： {}'.format(result_arr[:4]))
         flag.value = 0
-
+"""
 hflip = trans.Compose([
             de_preprocess,
             trans.ToPILImage(),
@@ -117,6 +117,7 @@ hflip = trans.Compose([
             trans.ToTensor(),
             trans.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
+"""
 
 def hflip_batch(imgs_tensor):
     hfliped_imgs = torch.empty_like(imgs_tensor)
